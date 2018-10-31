@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<title>IPFS Live Streaming</title>
+
+		
+		<script src="https://unpkg.com/ipfs/dist/index.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+		<script src="https://unpkg.com/hlsjs-ipfs-loader@0.1.2/dist/index.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+
+		<!-- loading the minified version -->
+		<script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
+
+		<!-- loading the human-readable (not minified) version -->
+		<script src="https://unpkg.com/ipfs-api/dist/index.js"></script>
+
+	</head>
+	
+	<body>
+	
+		<video id="video" controls></video>	
+	
+	</body>
+
+	<script type="text/javascript">	
+		
+		var ipfs = window.IpfsApi('localhost', '5001')
+		
+		var testhash = "QmTDcQZJkPhicywAJ2sS591okxfVzVeHMqTaU5RQBMRxPr"
+		
+		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
+		Hls.DefaultConfig.debug = false;
+		
+		if(Hls.isSupported()) {
+		
+			var video = document.getElementById('video');
+		
+			var hls = new Hls();
+		
+			hls.config.ipfs = ipfs;
+			hls.config.ipfsHash = testhash;
+		
+			hls.loadSource('master.m3u8');
+		
+			hls.attachMedia(video);
+		
+			hls.on(Hls.Events.MANIFEST_PARSED, () => {
+				video.play();
+			});
+		}
+
+	</script>
+</html>
+

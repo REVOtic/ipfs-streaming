@@ -1,15 +1,9 @@
-var http = require('http');
-var fs = require('fs');
+const WebSocket = require('ws');
 
-const PORT=8000; 
+const wss = new WebSocket.Server({ port: 8000 });
 
-fs.readFile('./stream.html', function (err, html) {
-
-    if (err) throw err;    
-
-    http.createServer(function(request, response) {  
-        response.writeHeader(200, {"Content-Type": "text/html"});  
-        response.write(html);  
-        response.end();  
-    }).listen(PORT);
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
 });

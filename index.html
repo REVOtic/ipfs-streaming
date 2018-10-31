@@ -1,56 +1,71 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>IPFS Live Streaming</title>
+<head>
+    <title>IPFS Streaming</title>
+    <!-- <link rel="stylesheet" href="css/main.css"> -->
+</head>
 
-		
-		<script src="https://unpkg.com/ipfs/dist/index.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-		<script src="https://unpkg.com/hlsjs-ipfs-loader@0.1.2/dist/index.js"></script>
+<body>
+    <div id="container">
+        <video id="gum" playsinline autoplay muted></video>
+        <video id="recorded" playsinline loop></video>
+        <div>
+            <button id="start">Start camera</button>
+            <button id="record" disabled>Start Recording</button>
+            <button id="play" disabled>Play</button>
+            <button id="download" disabled>Download</button>
+        </div>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+        <div>
+            <h4>Media Stream Constraints options</h4>
+            <p>Echo cancellation: <input type="checkbox" id="echoCancellation"></p>
+        </div>
+        <div>
+            <span id="errorMsg"></span>
+        </div>
+    </div>
 
-		<!-- loading the minified version -->
-		<script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
+    <script type="text/javascript" src="main.js" async></script>
 
-		<!-- loading the human-readable (not minified) version -->
-		<script src="https://unpkg.com/ipfs-api/dist/index.js"></script>
+    <!-- <script src="http://cdn.socket.io/stable/socket.io.js"></script>     -->
 
-	</head>
-	
-	<body>
-	
-		<video id="video" controls></video>	
-	
-	</body>
+    <!-- include adapter for srcObject shim -->
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <!-- <script src="js/main.js" async></script> -->
 
-	<script type="text/javascript">	
-		
-		var ipfs = window.IpfsApi('localhost', '5001')
-		
-		var testhash = "QmTDcQZJkPhicywAJ2sS591okxfVzVeHMqTaU5RQBMRxPr"
-		
-		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
-		Hls.DefaultConfig.debug = false;
-		
-		if(Hls.isSupported()) {
-		
-			var video = document.getElementById('video');
-		
-			var hls = new Hls();
-		
-			hls.config.ipfs = ipfs;
-			hls.config.ipfsHash = testhash;
-		
-			hls.loadSource('master.m3u8');
-		
-			hls.attachMedia(video);
-		
-			hls.on(Hls.Events.MANIFEST_PARSED, () => {
-				video.play();
-			});
-		}
+</body>
 
-	</script>
 </html>
 
+<style type="text/css">
+    button {
+      margin: 0 3px 10px 0;
+      padding-left: 2px;
+      padding-right: 2px;
+      width: 99px;
+    }
+
+    button:last-of-type {
+      margin: 0;
+    }
+
+    p.borderBelow {
+      margin: 0 0 20px 0;
+      padding: 0 0 20px 0;
+    }
+
+    video {
+      vertical-align: top;
+      --width: 25vw;
+      width: var(--width);
+      height: calc(var(--width) * 0.5625);
+    }
+
+    video:last-of-type {
+      margin: 0 0 20px 0;
+    }
+
+    video#gumVideo {
+      margin: 0 20px 20px 0;
+    }
+</style>
