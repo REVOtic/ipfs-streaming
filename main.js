@@ -150,14 +150,7 @@ async function init(constraints) {
     conn = new WebSocket('ws://localhost:8000');
 
     conn.onmessage = function(e){ console.log(e.data); };
-    conn.onopen = () => conn.send('hello');
-
-    // wss.on('connection', (ws) => {
-    //   ws.on('message', (message) => {
-    //     console.log(`Received message => ${message}`)
-    //   })
-    //   ws.send('ho!')
-    // })
+    conn.onopen = () => conn.send('init');
 
   } catch (e) {
     console.error('navigator.getUserMedia error:', e);
