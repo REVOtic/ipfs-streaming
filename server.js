@@ -4,6 +4,7 @@ const IPFS = require('ipfs')
 const node = new IPFS()
 
 var fs = require('fs');
+// var ffmpeg = require("ffmpeg.js");
 var ffmpeg = require('fluent-ffmpeg');
 var lockFile = require('lockfile');
 // var cp = require('child_process');
@@ -48,8 +49,9 @@ wss.on('connection', function connection(ws) {
         // console.log(message);
         var date = new Date();
 
-
+        console.log("hey there");
         lockFile.lock('temp_folder.lock', function (er) {
+            
             // let writeStream = fs.createWriteStream(fd);
             // writeStream.write(message);
             // writeStream.on('finish', () => {  
@@ -94,16 +96,29 @@ wss.on('connection', function connection(ws) {
             fs.appendFile(fd, message, function (err) {
                 if (err) {
                     return console.log(err);
+                }else{
+                    var name = dir+"/"+date.getTime()+".m3u8";
+                    console.log("The file was saved!, ", fd);
+                    
+                    var command = ffmpeg(fd, { timeout: 432000 }).addOptions([
+                        '-profile:v baseline', // baseline profile (level 3.0) for H264 video codec
+                        '-level 3.0', 
+                        '-s 640x360',          // 640px width, 360px height output video dimensions
+                        '-start_number 0',     // start the first .ts segment at index 0
+                        '-hls_time 10',        // 10 second segment duration
+                        '-hls_list_size 0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
+                        '-f hls'               // HLS format
+                      ]).output(name).on('end', callback).run()    
+                    console.log(name);
                 }
-                console.log("The file was saved!, ", fd);
-
-
+                
             });
 
-            // function callback() { 
-            //     // do something when encoding is done 
-            //     console.log("done");
-            // }
+
+            function callback() { 
+                // do something when encoding is done 
+                console.log("done");
+            }
              
             // try {
             //     ffmpeg(fd).addOptions([
@@ -123,10 +138,20 @@ wss.on('connection', function connection(ws) {
                 // er means that an error happened, and is probably bad.
             })
 
-            
 
-            
         })
+
+        // var testData = new Uint8Array(fs.readFileSync(fd));
+        // // Encode test video to VP8.
+        // var result = ffmpeg({
+        //   MEMFS: [{name: fd, data: testData}],
+        //   arguments: ["-i", fd, "test.webm", "-c:v", "libvpx", "-an", "out.webm"],
+        //   // Ignore stdin read requests.
+        //   stdin: function() {},
+        // });
+        // // Write out.webm to disk.
+        // var out = result.MEMFS[0];
+        // fs.writeFileSync(out.name, Buffer(out.data));
 
           
         // fs.writeFileSync(dir+"/"+date+".mp4", message, function (err) {
