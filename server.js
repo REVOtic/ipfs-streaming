@@ -5,9 +5,11 @@ const node = new IPFS()
 
 var fs = require('fs');
 // var ffmpeg = require("ffmpeg.js");
-var ffmpeg = require('fluent-ffmpeg');
+// var ffmpeg = require('fluent-ffmpeg');
 var lockFile = require('lockfile');
 // var cp = require('child_process');
+
+var spawn = require('child_process').spawn;
 
 // const spawn = require('child_process').spawn;   
 
@@ -50,7 +52,7 @@ wss.on('connection', function connection(ws) {
         var date = new Date();
 
         console.log("hey there");
-        lockFile.lock('temp_folder.lock', function (er) {
+        // lockFile.lock('temp_folder.lock', function (er) {
             
             // let writeStream = fs.createWriteStream(fd);
             // writeStream.write(message);
@@ -92,54 +94,79 @@ wss.on('connection', function connection(ws) {
             //     // resolve();
             // });
 
-            console.log("The file  saving!");
-            fs.appendFile(fd, message, function (err) {
-                if (err) {
-                    return console.log(err);
-                }else{
-                    var name = dir+"/"+date.getTime()+".m3u8";
-                    console.log("The file was saved!, ", fd);
+            // console.log("The file  saving!");
+            // fs.appendFile(fd, message, function (err) {
+            //     if (err) {
+            //         return console.log(err);
+            //     }else{
+
+
+
+                    var name = date.getTime()+".m3u8";
+                    var args = [
+                        '-y', 
+                        '-i', '-', 
+                        '-strict', '-2',
+                        '-profile:v', 'baseline', // baseline profile (level 3.0) for H264 video codec
+                        '-level', '3.0',          // 640px width, 360px height output video dimensions
+                        '-start_number', '0',     // start the first .ts segment at index 0
+                        '-hls_time', '5',        // 10 second segment duration
+                        '-hls_list_size', '0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
+                        '-f', 'hls', name               // HLS format    
+                    ];
+
+                    var proc = spawn('ffmpeg', args);
+
+                    proc.stdin.write(message);
+                    proc.stdin.end();
+
+                    proc.stdout.on('data', function(data) {
+                        console.log(data.toString());
+                    });
+
+
+
+                    proc.stderr.on('data', function(data) {
+                        console.log("-----------------------------");
+                        console.log(data.toString());
+                        console.log("-----------------------------");
+                        
+                    });
+
+                    proc.on('close', function() {
+                        console.log('finished');
+                    });
+
+                    proc.on('exit', function(code) {
+                        console.log("Exited with code " + code);
+                    });
+
+
+                    // console.log("The file was saved!, ", fd);
                     
-                    var command = ffmpeg(fd, { timeout: 432000 }).addOptions([
-                        '-profile:v baseline', // baseline profile (level 3.0) for H264 video codec
-                        '-level 3.0', 
-                        '-s 640x360',          // 640px width, 360px height output video dimensions
-                        '-start_number 0',     // start the first .ts segment at index 0
-                        '-hls_time 10',        // 10 second segment duration
-                        '-hls_list_size 0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
-                        '-f hls'               // HLS format
-                      ]).output(name).on('end', callback).run()    
-                    console.log(name);
-                }
+                    // var command = ffmpeg(fd, { timeout: 432000 }).addOptions([
+                    //     '-profile:v baseline', // baseline profile (level 3.0) for H264 video codec
+                    //     '-level 3.0', 
+                    //     '-s 640x360',          // 640px width, 360px height output video dimensions
+                    //     '-start_number 0',     // start the first .ts segment at index 0
+                    //     '-hls_time 10',        // 10 second segment duration
+                    //     '-hls_list_size 0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
+                    //     '-f hls'               // HLS format
+                    //   ]).output(name).on('end', callback).run()    
+                    // console.log(name);
+            //     }
                 
-            });
+            // });
 
 
-            function callback() { 
-                // do something when encoding is done 
-                console.log("done");
-            }
-             
-            // try {
-            //     ffmpeg(fd).addOptions([
-            //         '-profile:v baseline', // baseline profile (level 3.0) for H264 video codec
-            //         '-level 3.0', 
-            //         '-s 640x360',          // 640px width, 360px height output video dimensions
-            //         '-start_number 0',     // start the first .ts segment at index 0
-            //         '-hls_time 10',        // 10 second segment duration
-            //         '-hls_list_size 0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
-            //         '-f hls'               // HLS format
-            //       ]).output(fd+'.m3u8').on('end', callback).run()  
-            // } catch (err) {
-            //   console.error(err)
-            // }
+            
 
-            lockFile.unlock('temp_folder.lock', function (er) {
-                // er means that an error happened, and is probably bad.
-            })
+            // lockFile.unlock('temp_folder.lock', function (er) {
+            //     // er means that an error happened, and is probably bad.
+            // })
 
 
-        })
+        // })
 
         // var testData = new Uint8Array(fs.readFileSync(fd));
         // // Encode test video to VP8.
