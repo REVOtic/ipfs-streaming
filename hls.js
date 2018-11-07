@@ -4,10 +4,10 @@ var fs = require('fs');
 
 var ffmpeg = require('fluent-ffmpeg');
 
-fd = "./temp_folder/tmp1541525124314/1541525124314.mp4";
-dir = './temp_folder/tmp' + date.getTime();
-var name = "/temp_folder/"+date.getTime()+".m3u8";
-console.log("The file was saved!, ", fd);
+// fd = "./temp_folder/tmp1541525124314/1541525124314.mp4";
+// dir = './temp_folder/tmp' + date.getTime();
+// var name = "/temp_folder/"+date.getTime()+".m3u8";
+// console.log("The file was saved!, ", fd);
 
 ffmpeg(fd, { timeout: 432000 }).addOptions([
     '-strict -2',
