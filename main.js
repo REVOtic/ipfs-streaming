@@ -9,6 +9,7 @@ mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
 let mediaRecorder;
 let recordedBlobs;
 let sourceBuffer;
+let interval;
 
 // Get the elements
 const gumVideo = document.querySelector('video#gum');
@@ -29,6 +30,8 @@ recordButton.addEventListener('click', () => {
   if (recordButton.textContent === 'Start Recording') {
     // call startRecording function
     startRecording();
+    interval = setInterval(record_and_send, 1000);
+
   } else {
     stopRecording();
     recordButton.textContent = 'Start Recording';
@@ -36,6 +39,16 @@ recordButton.addEventListener('click', () => {
     downloadButton.disabled = false;
   }
 });
+
+function record_and_send(stream) {
+   const recorder = new MediaRecorder(window.stream);
+   const chunks = [];
+   recorder.ondataavailable = e => chunks.push(e.data);
+   console.log("Data sent") 
+   recorder.onstop = e => conn.send(new Blob(chunks));
+   setTimeout(()=> recorder.stop(), 1000); // we'll have a 5s media file
+   recorder.start();
+}
 
 const playButton = document.querySelector('button#play');
 playButton.addEventListener('click', () => {
@@ -64,16 +77,39 @@ downloadButton.addEventListener('click', () => {
 });
 
 function handleSourceOpen(event) {
-  console.log('MediaSource opened');
+  // console.log('MediaSource opened');
   sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
-  console.log('Source buffer: ', sourceBuffer);
+  // console.log('Source buffer: ', sourceBuffer);
 }
 
 function handleDataAvailable(event) {
   if (event.data && event.data.size > 0) {
-    conn.send(event.data);
-    console.log("event.data: ", event.data);
+
+    // var rb = [];
     recordedBlobs.push(event.data);
+
+    // rb.push(event.data);
+    // var reader = new FileReader();
+    // reader.readAsArrayBuffer(recordedBlobs);
+
+
+    // reader.onloadend = function (event) {
+        // connection.send(reader.result);
+        // conn.send(reader.result);
+        // var sb = new Blob(rb, {type: 'video/webm'});
+        // conn.send(event.data);
+
+
+        // console.log("event.data: ", reader.result);
+      
+    // };
+    // conn.send(event.data);
+    // mediaRecorder.stop();
+    
+    // console.log("Stopped");
+
+    // startRecording();
+    // console.log("started again");
   }
   
 }
@@ -112,29 +148,34 @@ function startRecording() {
     return;
   }
 
-  console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+  // console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
   recordButton.textContent = 'Stop Recording';
   playButton.disabled = true;
   downloadButton.disabled = true;
 
   // On stopoing the recording
   mediaRecorder.onstop = (event) => {
-    console.log('Recorder stopped: ', event);
+    // console.log('Recorder stopped: ', event);
   };
 
+  
+  mediaRecorder.start(1000); 
   mediaRecorder.ondataavailable = handleDataAvailable;
-  mediaRecorder.start(1000); // collect 10ms of data
-  console.log('MediaRecorder started', mediaRecorder);
+  // console.log('MediaRecorder started', mediaRecorder);
 }
+
+
 
 function stopRecording() {
   mediaRecorder.stop();
-  console.log('Recorded Blobs: ', recordedBlobs);
+  console.log(interval);
+  clearInterval(interval);
+  // console.log('Recorded Blobs: ', recordedBlobs);
 }
 
 function handleSuccess(stream) {
   recordButton.disabled = false;
-  console.log('getUserMedia() got stream:', stream);
+  // console.log('getUserMedia() got stream:', stream);
   window.stream = stream;
 
   
@@ -148,6 +189,7 @@ async function init(constraints) {
     
 
     conn = new WebSocket('ws://localhost:8000');
+    conn.binaryType = 'arraybuffer';
 
     conn.onmessage = function(e){ console.log(e.data); };
     conn.onopen = () => conn.send('init');
@@ -168,7 +210,7 @@ document.querySelector('button#start').addEventListener('click', async () => {
       width: 1280, height: 720
     }
   };
-  console.log('Using media constraints:', constraints);
+  // console.log('Using media constraints:', constraints);
   await init(constraints);
 });
 

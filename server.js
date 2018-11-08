@@ -20,7 +20,7 @@ const wss = new WebSocket.Server({ port: 8000 });
 
 
  // Variable to hold the name and directory structure
-let dir, fd
+let dir, fd, ipns, hash
 
 
 // Socket Connection
@@ -33,7 +33,7 @@ wss.on('connection', function connection(ws) {
             var date = new Date();
             
             // Create a directory with this name
-            dir = './temp_folder/tmp' + date.getTime();
+            dir = '/temp_folder/tmp' + date.getTime();
             
             if (!fs.existsSync()){
                 fs.mkdirSync(dir);
@@ -42,12 +42,17 @@ wss.on('connection', function connection(ws) {
 
             // Adding to IPFS
             // Commented for now
-            // let results = node.files.add(dir, recursive=true);
+            // let results = node.files.mkdir(dir, (err) => {
+            //   if (err) {
+            //     console.error(err)
+            //   }
+            // })
+            // let results = node.files.add(dir, { recursive: true });
             // console.log(results);
         }else{
             var date = new Date();
 
-            // Name of the master file
+            // // Name of the master file
             var name = dir+"/"+date.getTime()+".m3u8";
             
             // Args for HLS conversion
@@ -88,8 +93,15 @@ wss.on('connection', function connection(ws) {
 
             // FFmpeg outputs all of its messages to STDERR.  Let's log them to the console.
             proc.stderr.on('data', (data) => {
-                console.log('FFmpeg messages:', data.toString());
+                // console.log('FFmpeg messages:', data.toString());
             });
+
+            // fs.writeFile(dir+"/"+date+".webm", message, function (err) {
+            //     if (err) {
+            //         return console.log(err);
+            //     }
+            //     console.log("The file was saved!");
+            // });
 
             
         }
