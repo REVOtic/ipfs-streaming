@@ -33,22 +33,27 @@ wss.on('connection', function connection(ws) {
             var date = new Date();
             
             // Create a directory with this name
-            dir = '/temp_folder/tmp' + date.getTime();
+            dir = './temp_folder/tmp' + date.getTime();
+            console.log(dir);
             
-            if (!fs.existsSync()){
-                fs.mkdirSync(dir);
+            if (!fs.existsSync(dir)){
+                fs.mkdirSync(dir, function(err){
+                    if (err) {
+                        console.log('failed to create directory', err);
+                    }else{
+
+                       // // Adding to IPFS
+                       // let results = node.files.mkdir(dir, (err) => {
+                       //   if (err) {
+                       //     console.error(err)
+                       //   }
+                       // })
+                       // console.log(results); 
+                    }    
+                });
             }
 
-
-            // Adding to IPFS
-            // Commented for now
-            // let results = node.files.mkdir(dir, (err) => {
-            //   if (err) {
-            //     console.error(err)
-            //   }
-            // })
-            // let results = node.files.add(dir, { recursive: true });
-            // console.log(results);
+            
         }else{
             var date = new Date();
 
