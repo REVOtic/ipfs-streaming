@@ -9,6 +9,8 @@ var lockFile = require('lockfile');
 
 var spawn = require('child_process').spawn;
 
+var exec = require('child_process').exec;
+
 
 node.on('ready', () => {
 	console.log("IPFS ready")
@@ -20,7 +22,8 @@ const wss = new WebSocket.Server({ port: 8000 });
 
 
  // Variable to hold the name and directory structure
-let dir, fd, ipns, hash
+let dir, fd, ipns, hash, pinCommand;
+let ipnsCommand = "ipfs name publish /ipfs/"
 
 
 // Socket Connection
@@ -32,9 +35,11 @@ wss.on('connection', function connection(ws) {
             
             var date = new Date();
             
+            var timeShot = date.getTime();
+
             // Create a directory with this name
-            dir = './temp_folder/tmp' + date.getTime();
-            console.log(dir);
+            dir = './temp_folder/tmp' + timeShot
+            // var dirPath = '/temp_folder/tmp' + timeShot
             
             if (!fs.existsSync(dir)){
                 fs.mkdirSync(dir, function(err){
@@ -42,16 +47,38 @@ wss.on('connection', function connection(ws) {
                         console.log('failed to create directory', err);
                     }else{
 
-                       // // Adding to IPFS
-                       // let results = node.files.mkdir(dir, (err) => {
-                       //   if (err) {
-                       //     console.error(err)
-                       //   }
-                       // })
-                       // console.log(results); 
                     }    
                 });
             }
+
+            // console.log(dir);
+            // // Adding to IPFS
+            // let results = node.files.mkdir(dirPath, (err) => {
+            //   if (err) {
+            //     console.error(err)
+            //   }
+            // })
+            // console.log(results);
+
+            pinCommand = 'ipfs add -Qr '+dir;
+
+            exec(pinCommand, function(error, stdout, stderr) {
+                console.log('stdout: ' + stdout);
+                hash = stdout;
+                // console.log('stderr: ' + stderr);
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                }else{
+
+                    // exec(ipnsCommand+hash, function(error, stdout, stderr) {
+                    //     console.log('stderr: ' + stderr);
+                    //     if (error !== null) {
+                    //         console.log('exec error: ' + error);
+                    //     }
+                    // });
+                }
+            });
+
 
             
         }else{
@@ -87,6 +114,20 @@ wss.on('connection', function connection(ws) {
             // If FFmpeg stops for any reason, close the child_process.
             proc.on('close', (code, signal) => {
                 console.log('FFmpeg child process closed, code ' + code + ', signal ' + signal);
+                
+                // exec(pinCommand, function(error, stdout, stderr) {
+                //     console.log('stdout: ' + stdout);
+                //     hash = stdout;
+                //     console.log('stderr: ' + stderr);
+                //     if (error !== null) {
+                //         console.log('exec error: ' + error);
+                //     }else{
+                //         // ipfs name publish /ipfs/<CURRENT_PARENTFOLDER_HASH>
+
+                             
+                //     }
+                // });
+
             });
 
             // Handle STDIN pipe errors by logging to the console.
