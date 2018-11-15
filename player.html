@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IPFS Live Streaming</title>
+    <script src="https://unpkg.com/ipfs/dist/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://unpkg.com/hlsjs-ipfs-loader@0.1.2/dist/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+    <!-- loading the minified version -->
+    <script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
+    <!-- loading the human-readable (not minified) version -->
+    <script src="https://unpkg.com/ipfs-api/dist/index.js"></script>
+  </head>
+  
+  <body>
+  
+    <video id="video" controls></video> 
+  
+  </body>
+  <script type="text/javascript"> 
+    
+    var ipfs = window.IpfsApi('localhost', '5001')
+    
+    // var IPNShash = GetURLParameter('hash');
+
+    // var sPageURL = window.location.search.substring(1);
+    // var sURLVariables = sPageURL.split('&');
+    // var IPNShash;
+    // for (var i = 0; i < sURLVariables.length; i++) 
+    // {
+    //     var sParameterName = sURLVariables[i].split('=');
+    //     if (sParameterName[0] == 'hash') 
+    //     {
+    //         IPNShash = sParameterName[1];
+    //     }
+    // }
+    // console.log(IPNShash);
+    // const addr = '/ipns/'+IPNShash;
+
+    // ipfs.name.resolve(addr, function (err, name) {
+    //     var res = name.split("/");
+    //     console.log(res[2]);
+        
+        // var testhash = "/ipfs/QmdYVTAPH7qVTV5HKRW7y1maXdPL8iq2KbRi2NTiTibie2"
+        
+
+        // var testhash = res[2];
+        var testhash = "QmS1SpRjhbNuqj8FUQYCe8i6agnQtHQAXKWiRWxL9HVs2S";
+        Hls.DefaultConfig.loader = HlsjsIpfsLoader;
+        Hls.DefaultConfig.debug = false;
+        
+        if(Hls.isSupported()) {
+        
+          var video = document.getElementById('video');
+        
+          var hls = new Hls();
+        
+          hls.config.ipfs = ipfs;
+          hls.config.ipfsHash = testhash;
+        
+          hls.loadSource('master.m3u8');
+        
+          hls.attachMedia(video);
+        
+        
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            video.play();
+          });
+        }
+
+    // })
+  </script>
+</html>
