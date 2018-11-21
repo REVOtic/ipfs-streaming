@@ -19,54 +19,48 @@
   </body>
   <script type="text/javascript"> 
     
-    var ipfs = window.IpfsApi('localhost', '5001')
+    	var ipfs = window.IpfsApi('localhost', '5001')
+	
+	const recieveMsg = (hash) => {
+		//var testhash = "QmS1SpRjhbNuqj8FUQYCe8i6agnQtHQAXKWiRWxL9HVs2S";
+		var testhash = hash;		
+		console.log(testhash);
+		//Hls.DefaultConfig.loader = HlsjsIpfsLoader;
+		//Hls.DefaultConfig.debug = false;
+
+		//if(Hls.isSupported()) {
+
+		//	var video = document.getElementById('video');
+//
+//			var hls = new Hls();
+//
+//			hls.config.ipfs = ipfs;
+//			hls.config.ipfsHash = testhash;
+//
+//			hls.loadSource('master.m3u8');
+//
+//			hls.attachMedia(video);
+//
+//
+//			hls.on(Hls.Events.MANIFEST_PARSED, () => {
+//				video.play();
+//			});
+//		}	
+//	
+	}
+	
+
+	
+	
+
+	ipfs.pubsub.subscribe(topic, recieveMsg, (error) => {
+		if(err){
+			console.log("failed: ", error);		
+		}
+		console.log("Subscribed");	
+	})
     
-    // var IPNShash = GetURLParameter('hash');
-
-    // var sPageURL = window.location.search.substring(1);
-    // var sURLVariables = sPageURL.split('&');
-    // var IPNShash;
-    // for (var i = 0; i < sURLVariables.length; i++) 
-    // {
-    //     var sParameterName = sURLVariables[i].split('=');
-    //     if (sParameterName[0] == 'hash') 
-    //     {
-    //         IPNShash = sParameterName[1];
-    //     }
-    // }
-    // console.log(IPNShash);
-    // const addr = '/ipns/'+IPNShash;
-
-    // ipfs.name.resolve(addr, function (err, name) {
-    //     var res = name.split("/");
-    //     console.log(res[2]);
-        
-        // var testhash = "/ipfs/QmdYVTAPH7qVTV5HKRW7y1maXdPL8iq2KbRi2NTiTibie2"
-        
-
-        // var testhash = res[2];
-        var testhash = "QmS1SpRjhbNuqj8FUQYCe8i6agnQtHQAXKWiRWxL9HVs2S";
-        Hls.DefaultConfig.loader = HlsjsIpfsLoader;
-        Hls.DefaultConfig.debug = false;
-        
-        if(Hls.isSupported()) {
-        
-          var video = document.getElementById('video');
-        
-          var hls = new Hls();
-        
-          hls.config.ipfs = ipfs;
-          hls.config.ipfsHash = testhash;
-        
-          hls.loadSource('master.m3u8');
-        
-          hls.attachMedia(video);
-        
-        
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            video.play();
-          });
-        }
+	
 
     // })
   </script>
