@@ -1,7 +1,11 @@
 'use strict';
 
 const IPFS = require('ipfs')
-const node = new IPFS()
+const node = new IPFS({
+    EXPERIMENTAL: {
+    pubsub: true
+  }
+});
 
 var fs = require('fs');
 
@@ -14,7 +18,7 @@ var execSync = require('child_process').execSync;
 
 
 node.on('ready', () => {
-	console.log("IPFS ready")
+	console.log("IPFS ready", node.id)
 })
 
 const WebSocket = require('ws');
@@ -58,34 +62,44 @@ wss.on('connection', function connection(ws) {
                 }
 
                 console.log("The file was saved!");
-		
-		pinCommand = 'ipfs add -Qr '+dir;
+		          pinCommand = 'ipfs add -Qr '+dir;
 
-	        var hash = execSync(pinCommand);
-	        console.log(hash.toString);
+    	        var hash = execSync(pinCommand);
+    	        // console.log(hash.toString);
+                // console.log(node.pubsub);
 
-		node.pubsub.publish(topic, hash.toString(), (err) =>{
-			if(err){
-				console.log("Error");			
-			}
-			console.log("published");
-		})	
-            
-	    }); 
+                // const topic = 'fruit-of-the-day';
+                // const msg = Buffer.from('banana');
 
+                // node.pubsub.publish(topic, msg, (err) => {
+                //   if (err) {
+                //     return console.error(`failed to publish to ${topic}`, err)
+                //   }
+                //   // msg was broadcasted
+                //   console.log(`published to ${topic}`)
+                // })
 
-            
+                node.pubsub.publish(topic, new node.types.Buffer('banana'));
 
-
-
-            
+        		// node.pubsub.publish(topic, hash, (err) =>{
+        		// 	if(err){
+        		// 		return console.log(err);			
+          //           }
+          //           console.log("published");
+        		// })	
+                
+    	    });             
         }else{
+            console.log("In here");
+
             var date = new Date();
 
             // // Name of the master file
             var fileName = date.getTime()+".m3u8";
             var name = dir+"/"+fileName;
             
+            console.log("Name it ", fileName);
+
             // Args for HLS conversion
 
             var args = [
@@ -100,15 +114,19 @@ wss.on('connection', function connection(ws) {
                 '-f', 'hls', name               // HLS format    
             ];
 
+            console.log("Arguments ready");
             // Spawn the child process with ffmpeg and args
             const proc = spawn('ffmpeg', args);
 
+            console.log("Spawn");
 
             // Write the incoming chunk to the proc
+            console.log("Write the incoming chunk to the proc");
             proc.stdin.write(message);
 
             // End the writing stream
             proc.stdin.end();
+            console.log("End the writing stream");
 
             // If FFmpeg stops for any reason, close the child_process.
             proc.on('close', (code, signal) => {
@@ -117,40 +135,51 @@ wss.on('connection', function connection(ws) {
 
                 lockFile.lock(dir+"/master.m3u8.lock", function(er){
                     
+                    console.log("lock the master");
+                    
+
                     // Write the filename name to master.m3u8 
 
+
+                    console.log("Write the filename name to master.m3u8 ");
                     var wstream = fs.createWriteStream(dir+"/master.m3u8", {'flags': 'a'});
                     wstream.write("#EXT-X-STREAM-INF:BANDWIDTH=150000\n"+fileName+"\n");
+                    
+                    console.log("End writing");
                     wstream.end();
 
                     
+
+
                     // On finish writing stream
                     wstream.on('finish', function(){
+                        console.log("It is finished");
                         // Add this folder to ipfs
-                        execSync(pinCommand, function(error, stdout, stderr) {
-                            console.log('stdout: ' + stdout);
+                        try{
+                            console.log("Add to IPFS");
+                            var add = execSync(pinCommand);                            
                             
-                            // get new hash
-                            hash = stdout;
-                            console.log('stderr: ' + stderr);
-                            if (error !== null) {
-                                console.log('exec error: ' + error);
-                            }else{
-                                // ipfs name publish /ipfs/<CURRENT_PARENTFOLDER_HASH>
-                                
-                                // Added
-                                console.log("Send this hash: "+hash);
-                            	
-				node.pubsub.publish(topic, hash.toString(), (err) =>{
-					if(err){
-						console.log("Error");			
-					}
-					console.log("published");
-				})         
-                            }
-                        });    
+                            console.log("Added");
+                            hash = add;
+                                                            
+                            console.log("Send this hash: "+hash);
+                                                            
+                            console.log("publish to topic");
+                            // node.pubsub.publish(topic, hash, (err) =>{
+                            //     if(err){
+                            //         console.log(err);           
+                            //     }
+                            //     console.log("published");
+                            // })
+
+                            node.pubsub.publish(topic, new node.types.Buffer('banana'))
+                        }catch(e){
+                            console.log(e.stdout);
+                        }
+    
                         lockFile.unlock(dir+"/master.m3u8.lock", function(err){
                             // unlocked;
+                            console.log("unlock master");
                         })
                     })
                      

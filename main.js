@@ -193,6 +193,7 @@ async function init(constraints) {
 
     conn.onmessage = function(e){ console.log(e.data); };
     conn.onopen = () => conn.send('init');
+    console.log(conn);
 
   } catch (e) {
     console.error('navigator.getUserMedia error:', e);
