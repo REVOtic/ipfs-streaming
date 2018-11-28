@@ -24,12 +24,14 @@
   </body>
   <script type="text/javascript"> 
     
+    // Create new ipfs node from api with pubsub true
     const ipfs = new window.Ipfs({
 	    EXPERIMENTAL: {
 	    	pubsub: true
 	  }
 	});
 
+    //Topic to subscribe to get new hash
 	const topic = 'newHash'
 
  //    ipfs.once('ready', (err) ipfs.id() => {
@@ -50,7 +52,11 @@
 	ipfs.once('ready', () => ipfs.id((error, info) => {
 		// node is ready
 		if(error){throw err}
+
+		// If no error	
 		console.log("IPFS is ready");
+		
+		// Subscribe to topic "newHash"
 		ipfs.pubsub.subscribe(topic, (message) => {
 		  console.log('got message from ' + message.from)
 
@@ -64,6 +70,7 @@
 
 	}));
 
+	// test to publish
 	setTimeout(() => {
           ipfs.pubsub.publish(topic, new ipfs.types.Buffer('banana'))
     }, 2000)
