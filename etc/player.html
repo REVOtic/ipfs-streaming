@@ -26,9 +26,9 @@
     
     // Create new ipfs node from api with pubsub true
     const ipfs = new window.Ipfs({
-	  //   EXPERIMENTAL: {
-	  //   	pubsub: true
-	  // }
+	    EXPERIMENTAL: {
+	    	pubsub: true
+	  }
 	});
 
     //Topic to subscribe to get new hash
@@ -49,61 +49,61 @@
 	// 	}
 	// })
 
-	// ipfs.once('ready', () => ipfs.id((error, info) => {
-	// 	// node is ready
-	// 	if(error){throw err}
+	ipfs.once('ready', () => ipfs.id((error, info) => {
+		// node is ready
+		if(error){throw err}
 
-	// 	// If no error	
-	// 	console.log("IPFS is ready");
+		// If no error	
+		console.log("IPFS is ready");
 		
-	// 	// Subscribe to topic "newHash"
-	// 	ipfs.pubsub.subscribe(topic, (message) => {
-	// 	  console.log('got message from ' + message.from)
+		// Subscribe to topic "newHash"
+		ipfs.pubsub.subscribe(topic, (message) => {
+		  console.log('got message from ' + message.from)
 
-	// 	  // data is a buffer. Here we're converting it into a string
+		  // data is a buffer. Here we're converting it into a string
 
-	// 	  const data = message.data.toString()
-	// 	  console.log('containing data: ' + data)
-	// 	})
+		  const data = message.data.toString()
+		  console.log('containing data: ' + data)
+		})
 
 		
 
-	// }));
+	}));
 
-	// // test to publish
-	// setTimeout(() => {
- //          ipfs.pubsub.publish(topic, new ipfs.types.Buffer('banana'))
- //    }, 2000)
+	// test to publish
+	setTimeout(() => {
+          ipfs.pubsub.publish(topic, new ipfs.types.Buffer('banana'))
+    }, 2000)
 	
     
 
 
 
 // 	const recieveMsg = (hash) => {
-		var testhash = "QmXiqhyMgQwKH7RgRkqnab3Sfd4BnQGyyfE3S4F43ybip5";
-		// var testhash = hash;		
-		console.log(testhash);
-		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
-		Hls.DefaultConfig.debug = false;
+// 		//var testhash = "QmS1SpRjhbNuqj8FUQYCe8i6agnQtHQAXKWiRWxL9HVs2S";
+// 		var testhash = hash;		
+// 		console.log(testhash);
+// 		//Hls.DefaultConfig.loader = HlsjsIpfsLoader;
+// 		//Hls.DefaultConfig.debug = false;
 
-		if(Hls.isSupported()) {
+// 		//if(Hls.isSupported()) {
 
-			var video = document.getElementById('video');
-
-			var hls = new Hls();
-
-			hls.config.ipfs = ipfs;
-			hls.config.ipfsHash = testhash;
-
-			hls.loadSource('master.m3u8');
-
-			hls.attachMedia(video);
-
-
-			hls.on(Hls.Events.MANIFEST_PARSED, () => {
-				video.play();
-			});
-		}	
+// 		//	var video = document.getElementById('video');
+// //
+// //			var hls = new Hls();
+// //
+// //			hls.config.ipfs = ipfs;
+// //			hls.config.ipfsHash = testhash;
+// //
+// //			hls.loadSource('master.m3u8');
+// //
+// //			hls.attachMedia(video);
+// //
+// //
+// //			hls.on(Hls.Events.MANIFEST_PARSED, () => {
+// //				video.play();
+// //			});
+// //		}	
 // //	
 // 	}
 

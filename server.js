@@ -57,7 +57,7 @@ wss.on('connection', function connection(ws) {
             var timeShot = dateNow.getTime();
 
             // Create a directory with this name
-            dir = './temp_folder/tmp' + timeShot
+            dir = './media_publisher/temp_folder/tmp' + timeShot
             // var dirPath = '/temp_folder/tmp' + timeShot
             
 
@@ -110,8 +110,7 @@ wss.on('connection', function connection(ws) {
         		// })	
                 
     	    });             
-        }
-        else{
+        }else{
             // Current date to name the file uniquely
             var dateNow = new Date();
 
@@ -119,7 +118,7 @@ wss.on('connection', function connection(ws) {
             var fileName = dateNow.getTime()+".m3u8";
             var finalName = dir+"/"+fileName;
             
-            // console.log("Name it ", fileName);
+            console.log("Name it ", fileName);
 
             // Args for HLS conversion
             var args = [
@@ -137,6 +136,7 @@ wss.on('connection', function connection(ws) {
             // Spawn the child process with ffmpeg and args
             const proc = spawn('ffmpeg', args);
 
+            console.log("Spawn");
 
             // Write the incoming chunk to the proc
             proc.stdin.write(message);
@@ -152,12 +152,13 @@ wss.on('connection', function connection(ws) {
                 // lock the master
                 lockFile.lock(dir+"/master.m3u8.lock", function(er){
                     // Write the filename name to master.m3u8 
-                    
+                    console.log("Write the filename name to master.m3u8 ");
+
                     var wstream = fs.createWriteStream(dir+"/master.m3u8", {'flags': 'a'});
                     
                     wstream.write("#EXT-X-STREAM-INF:BANDWIDTH=150000\n"+fileName+"\n");
                     
-                    // console.log("End writing");
+                    console.log("End writing");
                     wstream.end();
 
                     
@@ -165,7 +166,7 @@ wss.on('connection', function connection(ws) {
                     wstream.on('finish', function(){
                         // Add this folder to ipfs
                         try{
-                            // console.log("Add to IPFS");
+                            console.log("Add to IPFS");
                             var addNewContent = execSync(pinCommand);                            
                             
                             hash = addNewContent;
@@ -173,6 +174,7 @@ wss.on('connection', function connection(ws) {
                             console.log("Send this hash: "+hash);
                                          
                             // publish to topic                   
+                            console.log("publish to topic");
                             // node.pubsub.publish(topic, hash, (err) =>{
                             //     if(err){
                             //         console.log(err);           
@@ -187,6 +189,7 @@ wss.on('connection', function connection(ws) {
     
                         lockFile.unlock(dir+"/master.m3u8.lock", function(err){
                             // unlocked;
+                            console.log("unlock master");
                         })
                     })
                      

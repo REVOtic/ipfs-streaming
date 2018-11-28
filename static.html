@@ -31,7 +31,15 @@
 		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
 		Hls.DefaultConfig.debug = false;
 
-		
+		var config = {
+			debug: true,
+			xhrSetup: function (xhr,url) {
+				xhr.withCredentials = true; // do send cookie
+				xhr.setRequestHeader("Access-Control-Allow-Headers","Content-Type, Accept, X-Requested-With");
+			    xhr.setRequestHeader("Access-Control-Allow-Origin","http://localhost:8081");
+				xhr.setRequestHeader("Access-Control-Allow-Credentials","true");
+			}
+		};
 		
 		if(Hls.isSupported()) {
 		

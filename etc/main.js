@@ -30,7 +30,7 @@ recordButton.addEventListener('click', () => {
   if (recordButton.textContent === 'Start Recording') {
     // call startRecording function
     startRecording();
-    interval = setInterval(record_and_send, 3000);
+    interval = setInterval(record_and_send, 1000);
 
   } else {
     stopRecording();
@@ -41,13 +41,12 @@ recordButton.addEventListener('click', () => {
 });
 
 function record_and_send(stream) {
-  console.log("hello");
    const recorder = new MediaRecorder(window.stream);
    const chunks = [];
    recorder.ondataavailable = e => chunks.push(e.data);
    console.log("Data sent") 
    recorder.onstop = e => conn.send(new Blob(chunks));
-   setTimeout(()=> recorder.stop(), 3000); // we'll have a 5s media file
+   setTimeout(()=> recorder.stop(), 1000); // we'll have a 5s media file
    recorder.start();
 }
 
