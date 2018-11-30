@@ -4,17 +4,21 @@
 const IPFS = require('ipfs')
 
 // Create IPFS node with pubsub = true
-const node = new IPFS({
-    EXPERIMENTAL: {
-    pubsub: true
-  }
-});
+// const node = new IPFS({
+  //   EXPERIMENTAL: {
+  //   pubsub: true
+  // }
+// });
 
 // Websocket for recieving video chunks
 const WebSocket = require('ws');
 
-// Create a socket 
+// Create a socket for chunks
 const wss = new WebSocket.Server({ port: 8000 });
+
+// for sending hash
+const hashSocket = new WebSocket.Server({ port: 8082 });
+
 
 // Filesystem
 var fs = require('fs');
@@ -29,9 +33,9 @@ var execSync = require('child_process').execSync;
 
 
 // once the server is ready
-node.on('ready', () => {
-    console.log("IPFS ready")
-})
+// node.on('ready', () => {
+//     console.log("IPFS ready")
+// })
 
 
 // Variable to hold the name and directory structure
@@ -41,12 +45,25 @@ node.on('ready', () => {
 let dir, hash, pinCommand;
 
 // Topic for the pubsub to publish the new hash
-const topic = "newHash";
+// const topic = "newHash";
 
 
+// hashSocket.on('connection', function connection(hashSocket) {
+//     console.log("ready");
+//     hashSocket.on('message', function incoming(message){
+//         console.log(message);
+//     });
+// });
+
+
+hashSocket.on('connection', function connection(hashSocket) {
+    console.log("hashSocket ready");
+    hashSocket.send("Test");
 // Socket Connection
 wss.on('connection', function connection(ws) {
     // On receiving the message
+    // console.log("Wss ready::::::::", hashSocket );
+
     ws.on('message', function incoming(message) {
         // Make  an empty folder and add it to ipfs, create the ipns for it
         if(message == "init"){
@@ -100,7 +117,7 @@ wss.on('connection', function connection(ws) {
 
 
                 // Publish the hash to pubsub topic "newHash"
-                node.pubsub.publish(topic, new node.types.Buffer('banana'));
+                // node.pubsub.publish(topic, new node.types.Buffer('banana'));
 
         		// node.pubsub.publish(topic, hash, (err) =>{
         		// 	if(err){
@@ -109,6 +126,9 @@ wss.on('connection', function connection(ws) {
           //           console.log("published");
         		// })	
                 
+                // Send it with websocket
+                // hashSocket.send(addEmptyFolder);
+                hashSocket.send(JSON.stringify({ type: 'hash', data: addEmptyFolder.toString().replace(/^\s+|\s+$/g, '')}));
     	    });             
         }
         else{
@@ -180,7 +200,11 @@ wss.on('connection', function connection(ws) {
                             //     console.log("published");
                             // })
 
-                            node.pubsub.publish(topic, new node.types.Buffer('banana'))
+                            // node.pubsub.publish(topic, new node.types.Buffer('banana'))
+                        
+                            // Send it with websocket
+                            // hashSocket.send(hash);
+                            // hashSocket.send(hash);
                         }catch(e){
                             console.log(e.stdout);
                         }
@@ -209,3 +233,7 @@ wss.on('connection', function connection(ws) {
         }
     });
 });
+
+});
+
+
