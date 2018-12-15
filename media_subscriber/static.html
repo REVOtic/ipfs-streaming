@@ -2,6 +2,10 @@
 	<head>
 		<title>IPFS Live Streaming</title>
 
+		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js">
+		</script>
+		
+
 		
 		<script src="https://unpkg.com/ipfs/dist/index.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -20,36 +24,125 @@
 	
 	<body>
 	
-		<video id="video" controls></video>	
-	
+		<video id="video" controls autoplay="true" muted="muted"></video>	
+		
 	</body>
 
 	<script type="text/javascript">	
 		
+		var video = document.getElementById('video');		
 		var ipfs = window.IpfsApi('localhost', '5001')
 		
-		var testhash = ""
-		
-		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
+		var hls = new Hls();
 		Hls.DefaultConfig.debug = false;
+		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
 		
 		if(Hls.isSupported()) {
-		
-			var video = document.getElementById('video');
-		
 			var hls = new Hls();
-		
 			hls.config.ipfs = ipfs;
-			hls.config.ipfsHash = testhash;
 		
-			hls.loadSource('master.m3u8');
-		
-			hls.attachMedia(video);
-		
-			hls.on(Hls.Events.MANIFEST_PARSED, () => {
-				video.play();
-			});
+			hashes = ['QmUKDXbTLQJkBXEAfZW7NXgi4H7Vr1Y8u5P86jtnSR2Rrz','QmZptdUTMJV7VxtQkiEjYDBzbw35t8NND1wLk5mH3RDmHy'];
+
+			// hashes = []
+
+			// hashes.push("QmUKDXbTLQJkBXEAfZW7NXgi4H7Vr1Y8u5P86jtnSR2Rrz")
+
+
+			// var testhash;
+			// for (var i = hashes.length - 1; i >= 0; i--) {
+	
+			// 	// ipfs.get(validCID, function (err, files) {
+			// 	//   // files.forEach((file) => {	
+			// 	//   //   console.log(file);
+			// 	//   // })
+
+
+			// 	// })
+
+			// }
+			var i =0;
+			play(i);
+
+			function play(hashNumber){
+				if(hashes.length > hashNumber){
+					hls.config.ipfsHash = hashes[hashNumber];
+					hls.attachMedia(video);
+					hls.loadSource('master.m3u8');
+					hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+						video.play();
+					});
+				}else{
+					console.log("We are done!");
+				}
+			}
+			document.getElementById('video').addEventListener('ended',myHandler,false)
+		    function myHandler(e) {
+			  console.log("done with::::::::::", i);
+			  hls.detachMedia();
+			  i++;
+			  play(i);
+
+		    }
 		}
+
+		
+
+		// hls.attachMedia(video);
+		
+		// Hls.DefaultConfig.loader = HlsjsIpfsLoader;
+		// Hls.DefaultConfig.debug = true;
+		// var i = 0;
+		
+		// if(Hls.isSupported()) {
+			
+		// 	hls.on(Hls.Events.FRAG_LOADING, onLevelLoaded);
+		// 	function onLevelLoaded () {
+		// 		// var level_duration = data.details.totalduration;
+		// 		console.log("Ended");
+		// 	}
+
+		// 	// 	hls.on(Hls.Events.MANIFEST_PARSED, () => {
+		// 	// 		video.play();
+		// 	// 	});
+		
+		// 	hls.config.ipfs = ipfs;
+		// 	// hls.config.ipfsHash = testhash;
+
+		
+		
+		// 	hls.loadSource('QmZptdUTMJV7VxtQkiEjYDBzbw35t8NND1wLk5mH3RDmHy/master.m3u8');
+		// 	hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+		// 		video.play();
+		// 	});
+
+		// 	// var intervalID = window.setInterval(myCallback, 500);
+		// 	// function myCallback() {
+		// 	// 	hls.startLoad()
+		// 	// }
+
+			
+			
+
+		// }
+
+		// function callPlay(){
+		// 	play(hashes[i]);
+		// 	i++;
+		// }
+
+
+		// function play(testhash){
+		// 	var hls = new Hls();
+		// 	hls.config.ipfs = ipfs;
+		// 	hls.config.ipfsHash = testhash;
+		// 	hls.loadSource('master.m3u8');
+		// 	hls.attachMedia(video);
+		// 	hls.on(Hls.Events.MANIFEST_PARSED, () => {
+		// 		video.play();
+		// 	});
+		// }
+
+
 
 	</script>
 </html>

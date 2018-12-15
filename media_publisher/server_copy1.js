@@ -3,6 +3,12 @@
 // IPFS API
 const IPFS = require('ipfs')
 
+// Create IPFS node with pubsub = true
+// const node = new IPFS({
+  //   EXPERIMENTAL: {
+  //   pubsub: true
+  // }
+// });
 
 // Websocket for recieving video chunks
 const WebSocket = require('ws');
@@ -26,6 +32,10 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 
+// once the server is ready
+// node.on('ready', () => {
+//     console.log("IPFS ready")
+// })
 
 
 // Variable to hold the name and directory structure
@@ -38,6 +48,12 @@ let dir, hash, pinCommand;
 // const topic = "newHash";
 
 
+// hashSocket.on('connection', function connection(hashSocket) {
+//     console.log("ready");
+//     hashSocket.on('message', function incoming(message){
+//         console.log(message);
+//     });
+// });
 
 
 hashSocket.on('connection', function connection(hashSocket) {
@@ -74,49 +90,57 @@ wss.on('connection', function connection(ws) {
 
 
             // Add a master.m3u8 file, empty
-         //    fs.writeFile(dir+"/master.m3u8", "#EXTM3U\n", function(err) {
-         //        if(err) {
-         //            return console.log(err);
-         //        }
+            fs.writeFile(dir+"/master.m3u8", "#EXTM3U\n", function(err) {
+                if(err) {
+                    return console.log(err);
+                }
 
 
-         //        console.log("The file was saved!");
+                console.log("The file was saved!");
 
-         //        // pinCommand = 'ipfs add -Qr '+dir;
+                pinCommand = 'ipfs add -Qr '+dir;
 
-    	    //    // Add this folder to IPFS
-         //        // var addEmptyFolder = execSync(pinCommand);
+    	       // Add this folder to IPFS
+                var addEmptyFolder = execSync(pinCommand);
 
+    	        // console.log(hash.toString);
+                // console.log(node.pubsub);
+
+                // const topic = 'fruit-of-the-day';
+                // const msg = Buffer.from('banana');
+
+                // node.pubsub.publish(topic, msg, (err) => {
+                //   if (err) {
+                //     return console.error(`failed to publish to ${topic}`, err)
+                //   }
+                //   // msg was broadcasted
+                //   console.log(`published to ${topic}`)
+                // })
+
+
+                // Publish the hash to pubsub topic "newHash"
+                // node.pubsub.publish(topic, new node.types.Buffer('banana'));
+
+        		// node.pubsub.publish(topic, hash, (err) =>{
+        		// 	if(err){
+        		// 		return console.log(err);			
+          //           }
+          //           console.log("published");
+        		// })	
                 
-         //        // Send it with websocket
-         //        // hashSocket.send(addEmptyFolder);
-         //        // hashSocket.send(JSON.stringify({ type: 'hash', data: addEmptyFolder.toString().replace(/^\s+|\s+$/g, '')}));
-    	    // });             
+                // Send it with websocket
+                // hashSocket.send(addEmptyFolder);
+                hashSocket.send(JSON.stringify({ type: 'hash', data: addEmptyFolder.toString().replace(/^\s+|\s+$/g, '')}));
+    	    });             
         }
         else{
             
             // Current date to name the file uniquely
             var dateNow = new Date();
 
-            var folder = dir + "/chunk_"+dateNow.getTime();
-            pinCommand = 'ipfs add -Qr '+folder;
-            if (!fs.existsSync(folder)){
-                fs.mkdirSync(folder, function(err){
-                    if (err) {
-                        console.log('failed to create directory', err);
-                    }else{
-                        
-                        console.log('create directory', folder);
-                    }    
-                });
-            }
-
-
-
             // Name of the master file
-            // var fileName = dateNow.getTime()+".m3u8";
-            var fileName = "master.m3u8";
-            var finalName = folder+"/"+fileName;
+            var fileName = dateNow.getTime()+".m3u8";
+            var finalName = dir+"/"+fileName;
             
             // console.log("Name it ", fileName);
 
@@ -149,19 +173,19 @@ wss.on('connection', function connection(ws) {
                 
 
                 // lock the master
-                // lockFile.lock(dir+"/master.m3u8.lock", function(er){
+                lockFile.lock(dir+"/master.m3u8.lock", function(er){
                     // Write the filename name to master.m3u8 
                     
-                    // var wstream = fs.createWriteStream(dir+"/master.m3u8", {'flags': 'a'});
+                    var wstream = fs.createWriteStream(dir+"/master.m3u8", {'flags': 'a'});
                     
-                    // wstream.write("#EXT-X-STREAM-INF:BANDWIDTH=150000\n"+fileName+"\n");
+                    wstream.write("#EXT-X-STREAM-INF:BANDWIDTH=150000\n"+fileName+"\n");
                     
-                    // // console.log("End writing");
-                    // wstream.end();
+                    // console.log("End writing");
+                    wstream.end();
 
                     
                     // On finish writing stream
-                    // wstream.on('finish', function(){
+                    wstream.on('finish', function(){
                         // Add this folder to ipfs
                         try{
                             // console.log("Add to IPFS");
@@ -170,32 +194,30 @@ wss.on('connection', function connection(ws) {
                             hash = addNewContent;
                                                             
                             console.log("Send this hash: "+hash);
-                            hashSocket.send(JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
-                            // hashSocket.send(JSON.stringify({ type: 'hash', data: hash}));
-                            // var wstream = fs.createWriteStream(dir+"/master.m3u8", {'flags': 'a'});
-                            
-                            // wstream.write("#EXT-X-STREAM-INF:BANDWIDTH=150000\n"+hash+"\n");
-                            
-                            // // console.log("End writing");
-                            // wstream.end();
-
-                            // wstream.on('finish', function(){
-                            //     lockFile.unlock(dir+"/master.m3u8.lock", function(err){
-                            //         // unlocked;
-                            //     })       
-                            // });
                                          
+                            // publish to topic                   
+                            // node.pubsub.publish(topic, hash, (err) =>{
+                            //     if(err){
+                            //         console.log(err);           
+                            //     }
+                            //     console.log("published");
+                            // })
 
+                            // node.pubsub.publish(topic, new node.types.Buffer('banana'))
+                        
+                            // Send it with websocket
+                            // hashSocket.send(hash);
+                            // hashSocket.send(hash);
                         }catch(e){
                             console.log(e.stdout);
                         }
     
-                        // lockFile.unlock(dir+"/master.m3u8.lock", function(err){
-                        //     // unlocked;
-                        // })
-                    // })
+                        lockFile.unlock(dir+"/master.m3u8.lock", function(err){
+                            // unlocked;
+                        })
+                    })
                      
-                // });
+                });
 
 
 
