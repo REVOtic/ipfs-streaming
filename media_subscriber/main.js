@@ -30,7 +30,7 @@ recordButton.addEventListener('click', () => {
   if (recordButton.textContent === 'Start Recording') {
     // call startRecording function
     startRecording();
-    interval = setInterval(record_and_send, 1000);
+    interval = setInterval(record_and_send, 5000);
 
   } else {
     stopRecording();
@@ -47,7 +47,7 @@ function record_and_send(stream) {
    recorder.ondataavailable = e => chunks.push(e.data);
    console.log("Data sent") 
    recorder.onstop = e => conn.send(new Blob(chunks));
-   setTimeout(()=> recorder.stop(), 1000); // we'll have a 5s media file
+   setTimeout(()=> recorder.stop(), 5000); // we'll have a 5s media file
    recorder.start();
 }
 

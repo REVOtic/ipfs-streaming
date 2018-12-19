@@ -10,7 +10,8 @@
 		<script src="https://unpkg.com/ipfs/dist/index.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 		<script src="https://unpkg.com/hlsjs-ipfs-loader@0.1.2/dist/index.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
+		
+		<script src="https://cdn.jsdelivr.net/npm/async@2.6.1/dist/async.min.js"></script>
 
 		<!-- loading the minified version -->
 		<script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
@@ -32,18 +33,80 @@
 		
 		var video = document.getElementById('video');		
 		var ipfs = window.IpfsApi('localhost', '5001')
-		
+		var hashes = [];
+
 		var hls = new Hls();
 		Hls.DefaultConfig.debug = false;
 		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
-		
+
+
+		window.setInterval( function(){
+		  if(hashes.length != 0) {		     
+		  	if(Hls.isSupported()) {
+		  		var hls = new Hls();
+		  		hls.config.ipfs = ipfs;
+
+		  		async.whilst(function () {
+		  		  return hashes.length > 0;
+		  		},
+		  		function (next) {
+		  			var hash = hashes.shift();
+		  			console.log(hash);
+
+		  			hls.config.ipfsHash = hash;
+					hls.attachMedia(video);
+					hls.loadSource('master.m3u8');
+					hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+						video.play();
+					});
+
+		  		    next();
+		  		},
+		  		function (err) {
+		  		  // All things are done!
+		  		});
+		  	}
+
+		  }
+		},5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		if(Hls.isSupported()) {
 			var hls = new Hls();
 			hls.config.ipfs = ipfs;
-		
-			hashes = ['QmUKDXbTLQJkBXEAfZW7NXgi4H7Vr1Y8u5P86jtnSR2Rrz','QmZptdUTMJV7VxtQkiEjYDBzbw35t8NND1wLk5mH3RDmHy'];
 
-			// hashes = []
+			
+
+			// async.whilst(function () {
+			//   return hls.;
+			// },
+			// function (next) {
+			//   request("http://some_json_server.com/data?page=" + page, function (error, response, body) {
+			//     if (!error && response.statusCode == 200) {
+			//       store_data(body)
+			//     }
+			//     page++;
+			//     next();
+			//   });
+			// },
+		
+			// hashes = ['QmUKDXbTLQJkBXEAfZW7NXgi4H7Vr1Y8u5P86jtnSR2Rrz','QmZptdUTMJV7VxtQkiEjYDBzbw35t8NND1wLk5mH3RDmHy'];
+
+			
 
 			// hashes.push("QmUKDXbTLQJkBXEAfZW7NXgi4H7Vr1Y8u5P86jtnSR2Rrz")
 
@@ -60,29 +123,29 @@
 			// 	// })
 
 			// }
-			var i =0;
-			play(i);
+			// var i =0;
+			// play(i);
 
-			function play(hashNumber){
-				if(hashes.length > hashNumber){
-					hls.config.ipfsHash = hashes[hashNumber];
-					hls.attachMedia(video);
-					hls.loadSource('master.m3u8');
-					hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-						video.play();
-					});
-				}else{
-					console.log("We are done!");
-				}
-			}
-			document.getElementById('video').addEventListener('ended',myHandler,false)
-		    function myHandler(e) {
-			  console.log("done with::::::::::", i);
-			  hls.detachMedia();
-			  i++;
-			  play(i);
+			// function play(hashNumber){
+			// 	if(hashes.length > hashNumber){
+			// 		hls.config.ipfsHash = hashes[hashNumber];
+			// 		hls.attachMedia(video);
+			// 		hls.loadSource('master.m3u8');
+			// 		hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+			// 			video.play();
+			// 		});
+			// 	}else{
+			// 		console.log("We are done!");
+			// 	}
+			// }
+			// document.getElementById('video').addEventListener('ended',myHandler,false)
+		 //    function myHandler(e) {
+			//   console.log("done with::::::::::", i);
+			//   hls.detachMedia();
+			//   i++;
+			//   play(i);
 
-		    }
+		 //    }
 		}
 
 		

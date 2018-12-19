@@ -8,5 +8,11 @@ socket.addEventListener('open', function (event) {
 
 // Listen for messages
 socket.addEventListener('message', function (event) {
-    console.log('Message from server:::::::::::', event.data);
+    // console.log('Message from server:::::::::::', event.data);
+   	hashes.push(event.data);
 });
+
+// socket.addEventListener('hash', function (data) {
+//   console.log(data);
+//   // socket.emit('my other event', { my: 'data' });
+// });

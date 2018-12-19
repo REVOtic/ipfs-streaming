@@ -37,14 +37,21 @@ let dir, hash, pinCommand;
 // Topic for the pubsub to publish the new hash
 // const topic = "newHash";
 
+// let hs;
 
 
-
-hashSocket.on('connection', function connection(hashSocket) {
+let hs = hashSocket.on('connection', function connection(hSocket) {
     console.log("hashSocket ready");
-    hashSocket.send("Test");
+    hSocket.send("Test");
+    // hs = hashSocket;
+
+    hashSocket.on("hash", function(data){
+        hSocket.send(data);
+    });
+});
 // Socket Connection
 wss.on('connection', function connection(ws) {
+    // console.log(hs);
     // On receiving the message
     // console.log("Wss ready::::::::", hashSocket );
 
@@ -169,8 +176,10 @@ wss.on('connection', function connection(ws) {
                             
                             hash = addNewContent;
                                                             
-                            console.log("Send this hash: "+hash);
-                            hashSocket.send(JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
+                            console.log("Send this hash: "+ hash);
+                            // hashSocket.emit('hash', JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
+                            // hs.send(JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
+                            hashSocket.emit('hash' ,hash.toString().replace(/^\s+|\s+$/g, ''));
                             // hashSocket.send(JSON.stringify({ type: 'hash', data: hash}));
                             // var wstream = fs.createWriteStream(dir+"/master.m3u8", {'flags': 'a'});
                             
@@ -187,7 +196,7 @@ wss.on('connection', function connection(ws) {
                                          
 
                         }catch(e){
-                            console.log(e.stdout);
+                            console.log(e);
                         }
     
                         // lockFile.unlock(dir+"/master.m3u8.lock", function(err){
@@ -215,6 +224,6 @@ wss.on('connection', function connection(ws) {
     });
 });
 
-});
+// });
 
 
