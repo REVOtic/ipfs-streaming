@@ -18,7 +18,7 @@ const hashSocket = new WebSocket.Server({ port: 8082 });
 var fs = require('fs');
 
 // Lockfile library to lock master.m3u8
-var lockFile = require('lockfile');
+// var lockFile = require('lockfile');
 
 // Child Pocess Creation
 var spawn = require('child_process').spawn;

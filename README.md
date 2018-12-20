@@ -2,6 +2,25 @@
 Streaming Live Media over the IPFS Network
 
 
+
+## Installation
+
+1. Install IPFS js API 
+
+```npm install ipfs --save```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Convert a video to HLS
 
 ffmpeg -i ./temp_folder/tmp1541525124314/1541525124314.mp4 -strict -2 -profile:v baseline -level 3.0 -start_number 0 -hls_time 5 -hls_list_size 0 -f hls master.m3u8
