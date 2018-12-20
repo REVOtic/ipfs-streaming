@@ -26,6 +26,11 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 
+var connect = require('connect');
+var serveStatic = require('serve-static');
+connect().use(serveStatic("./../media_subscriber")).listen(8081, function(){
+    console.log('Server running on 8081...');
+});
 
 
 // Variable to hold the name and directory structure
