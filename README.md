@@ -9,7 +9,9 @@ Streaming Live Media over the IPFS Network
 
 ```npm install ipfs --save```
 
+2. Install connect and serve-static
 
+```npm install connect serve-static```
 
 
 
