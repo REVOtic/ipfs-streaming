@@ -2,7 +2,6 @@
 > Streaming Live and On-Demand Media over the IPFS Network
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
 
 
 ![](https://www.logistec.com/wp-content/uploads/2017/12/placeholder.png)
@@ -10,15 +9,18 @@
 
 ## Requirements  (Prerequisites)
 Tools and packages required to successfully install this project.
-For example:
+
 * FFMpeg [Install](https://www.ffmpeg.org/)
 * Node.js [Install](https://nodejs.org/en/)
 * IPFS [Install](https://ipfs.io/)
+* Python
+
 
 ## Installation
-A step by step list of commands / guide that informs how to install an instance of this project. 
 
-1. Make sure you haveNode installed
+1. Make sure you have node installed
+
+		https://nodejs.org/en/
 
 2. Install FFMpeg
 
@@ -30,6 +32,13 @@ A step by step list of commands / guide that informs how to install an instance 
 
 		http://www.ffmpeg.org/download.html
 
+		Help: https://www.wikihow.com/Install-FFmpeg-on-Windows
+
+
+3.  Install IPFS
+
+		https://ipfs.io/
+
 3. Clone this repository 
 
 		git clone https://github.com/REVOtic/ipfs-streaming
@@ -39,11 +48,7 @@ A step by step list of commands / guide that informs how to install an instance 
 		npm install
 
 
- 
-
-
 ## Deployment Notes
-Explain how to deploy your project  on a live server. To do so include step by step guide. Potentially do this for multiple platforms. 
 
 1. Run IPFS daemon on port 8080 by:
 
@@ -72,4 +77,4 @@ You can find me here at:
 ## License
 This project is licensed under the MIT License - see the LICENSE.md file for details
 
-MIT © REVOtic
+MIT © REVOtic Engineering

@@ -188,7 +188,7 @@ async function init(constraints) {
     handleSuccess(stream);
     
 
-    conn = new WebSocket('ws://localhost:8000');
+    conn = new WebSocket('ws://13.84.224.77:8000');
     conn.binaryType = 'arraybuffer';
 
     conn.onmessage = function(e){ console.log(e.data); };
