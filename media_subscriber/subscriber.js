@@ -1,5 +1,5 @@
 // Create WebSocket connection.
-const socket = new WebSocket('ws://13.84.224.77:8082');
+const socket = new WebSocket('ws://stream.endereum.io:8082');
 
 // Connection opened
 socket.addEventListener('open', function (event) {
