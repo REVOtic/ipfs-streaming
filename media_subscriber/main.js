@@ -189,7 +189,7 @@ async function init(constraints) {
     handleSuccess(stream);
     
 
-    conn = new WebSocket('ws://stream.endereum.io:8000');
+    conn = new WebSocket('wss://stream.endereum.io:8000');
     conn.binaryType = 'arraybuffer';
 
     conn.onmessage = function(e){ console.log(e.data); };
