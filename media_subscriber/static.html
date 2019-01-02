@@ -21,6 +21,9 @@
 
 		<script type="text/javascript" src="subscriber.js" async></script>
 
+		<!-- socket.io cdn -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+
 	</head>
 	
 	<body>
@@ -32,7 +35,7 @@
 	<script type="text/javascript">	
 		
 		var video = document.getElementById('video');		
-		var ipfs = window.IpfsApi('stream.endereum.io', '5001')
+		var ipfs = window.IpfsApi('localhost', '5001')
 		var hashes = [];
 
 		var hls = new Hls();

@@ -45,8 +45,9 @@ function record_and_send(stream) {
    const recorder = new MediaRecorder(window.stream);
    const chunks = [];
    recorder.ondataavailable = e => chunks.push(e.data);
+   // recorder.onstop = e => conn.send(new Blob(chunks));
+   recorder.onstop = e => socket.emit('chunk', new Blob(chunks));
    console.log("Data sent") 
-   recorder.onstop = e => conn.send(new Blob(chunks));
    setTimeout(()=> recorder.stop(), 5000); // we'll have a 5s media file
    recorder.start();
 }
@@ -189,12 +190,28 @@ async function init(constraints) {
     handleSuccess(stream);
     
 
-    conn = new WebSocket('ws://stream.endereum.io:8000');
-    conn.binaryType = 'arraybuffer';
+    // conn = new WebSocket('ws://stream.endereum.io:8000');
+    // conn.binaryType = 'arraybuffer';
 
-    conn.onmessage = function(e){ console.log(e.data); };
-    conn.onopen = () => conn.send('init');
-    console.log(conn);
+    // conn.onmessage = function(e){ console.log(e.data); };
+    // conn.onopen = () => conn.send('init');
+    // console.log(conn);
+
+
+    // var socket = io.connect(stream.endereum.io:8000);
+    socket = io.connect("http://localhost:8081");
+    // socket.emit('create', 'room1');
+
+    socket.on('connect', function() {
+       // Connected, let's sign-up for to receive messages for this room
+       socket.emit('room', 'room1');
+    });
+
+    socket.emit('chunk', 'init');
+
+    socket.on('message', function(data) {
+       console.log('Incoming message:', data);
+    });
 
   } catch (e) {
     console.error('navigator.getUserMedia error:', e);
