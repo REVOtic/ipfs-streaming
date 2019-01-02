@@ -204,7 +204,7 @@ async function init(constraints) {
 
     socket.on('connect', function() {
        // Connected, let's sign-up for to receive messages for this room
-       socket.emit('room', 'room1');
+       socket.emit('room', 'publisher_'+socket.id);
     });
 
     socket.emit('chunk', 'init');

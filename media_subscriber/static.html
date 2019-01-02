@@ -24,11 +24,37 @@
 		<!-- socket.io cdn -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	</head>
 	
-	<body>
-	
-		<video id="video" controls autoplay="true" muted="muted"></video>	
+	<body class="container">
+		<br><br><br>
+		<div class="page-header text-center">
+		  <h1>Secure and Decentralized Live Streaming using Blockchain and IPFS</h1>
+		  <small>By REVOtic Engineering</small>
+		  
+		</div>
+		<div class="row text-center">
+			<h2>Select the publisher you want to stream from the dropdown!</h2>
+			<select id="publishers" class="form-control">
+			    <option value="none">Select</option>
+			</select>
+			<br>	
+			<button onclick="startStream()" class="btn btn-primary">Stream</button>
+			<button onclick="refreshRooms()" class="btn btn-success">Refresh</button>
+		</div>
+		<br><br>
+		<div class="row text-center">
+			<video id="video" width="500" height="500" controls autoplay="true" muted="muted" style="border-width: 1px; border-color:black; border-style: solid;"></video>
+
+		</div>		
 		
 	</body>
 

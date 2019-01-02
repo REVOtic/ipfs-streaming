@@ -96,7 +96,26 @@ var hash_room;
 io.sockets.on('connection', function(socket) {
   socket.on('room', function(room) {
     socket.join(room);
+    // hash_room = room+"_hash";
+    // console.log(room);
+    // rooms_available
+    // io.sockets.in(room).emit('rooms_available', io.sockets.adapter.rooms);
+    // io.sockets.in(hash_room).emit('rooms_available', io.sockets.adapter.rooms);
+  });
+
+  socket.on('room_for_hash', function(room) {
     hash_room = room+"_hash";
+    socket.join(hash_room);
+    // console.log(room);
+    // rooms_available
+    // io.sockets.in(room).emit('rooms_available', io.sockets.adapter.rooms);
+    // io.sockets.in(hash_room).emit('rooms_available', io.sockets.adapter.rooms);
+  });
+
+  socket.on("list_rooms", function(id){
+    console.log("Listing rooms for "+id);
+    io.sockets.emit('rooms_available', io.sockets.adapter.rooms);
+
   });
 
   socket.on('chunk', function(message) {
@@ -223,6 +242,7 @@ io.sockets.on('connection', function(socket) {
                             // hashSocket.emit('hash', JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
                             // hs.send(JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
                             // hashSocket.emit('hash' ,hash.toString().replace(/^\s+|\s+$/g, ''));
+                            console.log("sending data to: "+ hash_room);
                             io.sockets.in(hash_room).emit('hash', hash.toString().replace(/^\s+|\s+$/g, ''));
 
                             // hashSocket.send(JSON.stringify({ type: 'hash', data: hash}));
