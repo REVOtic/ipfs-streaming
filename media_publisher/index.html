@@ -3,14 +3,26 @@
 <head>
     <title>IPFS Streaming</title>
     <!-- <link rel="stylesheet" href="css/main.css"> -->
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <div id="container">
+    <div id="container" class="container">
+        
         <video id="gum" playsinline autoplay muted></video>
+        
+
         <video id="recorded" playsinline loop></video>
         <div>
-            <button id="start">Start camera</button>
+            <button class="btn-outline-success" id="start">Start camera</button>
             <button id="record" disabled>Start Recording</button>
             <button id="play" disabled>Play</button>
             <button id="download" disabled>Download</button>

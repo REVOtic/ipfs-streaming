@@ -18,7 +18,7 @@ const gumVideo = document.querySelector('video#gum');
 const errorMsgElement = document.querySelector('span#errorMsg');
 
 // Video element to play the recorded video
-const recordedVideo = document.querySelector('video#recorded');
+// const recordedVideo = document.querySelector('video#recorded');
 
 // Button to record
 const recordButton = document.querySelector('button#record');

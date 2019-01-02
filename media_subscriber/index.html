@@ -3,21 +3,40 @@
 <head>
     <title>IPFS Streaming</title>
     <!-- <link rel="stylesheet" href="css/main.css"> -->
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <div id="container">
-        <video id="gum" playsinline autoplay muted></video>
-        <video id="recorded" playsinline loop></video>
-        <div>
-            <button id="start">Start camera</button>
-            <button id="record" disabled>Start Recording</button>
-            <button id="play" disabled>Play</button>
-            <button id="download" disabled>Download</button>
-            <a href="/player.html">Go to live screen</a>
+    <div id="container" class="container">
+        <div class="page-header text-center">
+          <h1>Secure and Decentralized Live Streaming using Blockchain and IPFS</h1>
+          <small>By REVOtic Engineering</small>
+          
+        </div>
+        <div class="row text-center">
+            <video id="gum" width="500" height="500" playsinline autoplay muted style="border-width: 1px; border-color:black; border-style: solid;"></video>
+        </div>
+        <div class="row">
+          <div class="col-md-4"></div>
+          <button id="start" class="btn btn-primary col-md-4">Start camera</button>
+          
+          <button id="play" disabled class="invisible">Play</button>
+          <button id="download" disabled class="invisible">Download</button>
+        </div>
+        <div class="row">
+          <div class="col-md-4"></div>
+          <button id="record" disabled class="btn btn-success col-md-4">Start Recording</button>
         </div>
 
-        <div>
+        <div class="invisible">
             <h4>Media Stream Constraints options</h4>
             <p>Echo cancellation: <input type="checkbox" id="echoCancellation"></p>
         </div>
@@ -42,32 +61,34 @@
 <style type="text/css">
     button {
       margin: 0 3px 10px 0;
-      padding-left: 2px;
-      padding-right: 2px;
-      width: 99px;
+      /*padding-left: 2px;*/
+      /*padding-right: 2px;*/
+      /*width: 99px;*/
+      font-size: 26px !important;
     }
 
-    button:last-of-type {
+
+/*    button:last-of-type {
       margin: 0;
-    }
-
+    }*/
+/*
     p.borderBelow {
       margin: 0 0 20px 0;
       padding: 0 0 20px 0;
-    }
+    }*/
 
     video {
-      vertical-align: top;
-      --width: 25vw;
-      width: var(--width);
-      height: calc(var(--width) * 0.5625);
+      /*vertical-align: top;*/
+      /*--width: 25vw;*/
+      /*width: var(--width);*/
+      /*height: calc(var(--width) * 0.5625);*/
     }
 
-    video:last-of-type {
+/*    video:last-of-type {
       margin: 0 0 20px 0;
-    }
+    }*/
 
-    video#gumVideo {
+/*    video#gumVideo {
       margin: 0 20px 20px 0;
-    }
+    }*/
 </style>
