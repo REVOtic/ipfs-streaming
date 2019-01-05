@@ -19,7 +19,7 @@
 
 var publishers = document.getElementById("publishers");
 
-socket = io.connect("http://localhost:8081");
+socket = io.connect("https://stream.endereum.io:8081");
 
 
 // socket.on('connect', function() {
