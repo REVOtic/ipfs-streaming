@@ -190,14 +190,8 @@ async function init(constraints) {
     handleSuccess(stream);
     
 
-    // conn = new WebSocket('ws://stream.endereum.io:8000');
-    // conn.binaryType = 'arraybuffer';
 
-    // conn.onmessage = function(e){ console.log(e.data); };
-    // conn.onopen = () => conn.send('init');
-    // console.log(conn);
-
-    console.log("websocket")
+    console.log("websocket connection")
     socket = io.connect("https://stream.endereum.io:8081");
     // socket = io.connect("http://localhost:8081");
     // socket.emit('create', 'room1');

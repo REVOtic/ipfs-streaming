@@ -25,11 +25,17 @@ var execSync = require('child_process').execSync;
 
 
 // var express = require('express');
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+// var app = require('express')();
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
 
-server.listen(8081);
+// server.listen(8081);
+
+var app = require('express')();
+var server = app.listen(8081);
+var io = require('socket.io').listen(server);
+
+console.log("Server ready");
 
 // const app = express();
 // const socketIO = require('socket.io');
