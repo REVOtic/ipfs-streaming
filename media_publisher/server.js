@@ -32,7 +32,7 @@ var execSync = require('child_process').execSync;
 // server.listen(8081);
 
 var app = require('express')();
-var server = app.listen(8081);
+var server = app.listen(8082);
 var io = require('socket.io').listen(server);
 
 console.log("Server ready");
