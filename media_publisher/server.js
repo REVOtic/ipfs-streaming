@@ -72,7 +72,7 @@ app.get('/player', function (req, res) {
 // dir holds the path for temp_folder
 // hash holds the hash of newly added content
 // pinCommand holdes the string for adding content to ipfs in child node
-let dir, hash, pinCommand;
+let dir, hash, pinCommand, number;
 
 // Topic for the pubsub to publish the new hash
 // const topic = "newHash";
@@ -120,6 +120,8 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('chunk', function(message) {
         if(message == "init"){
+
+            number = 0;
             
             // Current date to name the file uniquely
             var dateNow = new Date();
@@ -163,18 +165,20 @@ io.sockets.on('connection', function(socket) {
             // });             
         }
         else{
+            number++;
             
+            console.log("Recieved Data")
             // Current date to name the file uniquely
             var dateNow = new Date();
 
             var folder = dir + "/chunk_"+dateNow.getTime();
-            pinCommand = 'ipfs add -Qr '+folder;
+            pinCommand = 'ipfs add -r '+folder;
             if (!fs.existsSync(folder)){
                 fs.mkdirSync(folder, function(err){
                     if (err) {
                         console.log('failed to create directory', err);
                     }else{
-                        
+                                    
                         console.log('create directory', folder);
                     }    
                 });
@@ -182,9 +186,11 @@ io.sockets.on('connection', function(socket) {
 
 
 
+
+
             // Name of the master file
             // var fileName = dateNow.getTime()+".m3u8";
-            var fileName = "master.m3u8";
+            var fileName = dateNow.getTime() + "master.m3u8";
             var finalName = folder+"/"+fileName;
             
             // console.log("Name it ", fileName);
@@ -236,15 +242,20 @@ io.sockets.on('connection', function(socket) {
                             // console.log("Add to IPFS");
                             var addNewContent = execSync(pinCommand);                            
                             
-                            hash = addNewContent;
+                            var hashString = addNewContent.toString();
+
+                            hash = hashString.split("\n")[2].split(" ")[1]
+
                                                             
                             console.log("Send this hash: "+ hash);
+                            // console.log("typeof "+ typeof(hash));
                             // hashSocket.emit('hash', JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
                             // hs.send(JSON.stringify({ type: 'hash', data: hash.toString().replace(/^\s+|\s+$/g, '')}));
                             // hashSocket.emit('hash' ,hash.toString().replace(/^\s+|\s+$/g, ''));
                             console.log("sending data to: "+ hash_room);
-                            io.sockets.in(hash_room).emit('hash', hash.toString().replace(/^\s+|\s+$/g, ''));
 
+                            io.sockets.in(hash_room).emit('hash', {'hash': hash.trim(), "master_name": fileName, "sequence_number": number});
+                            // hash.toString().replace(/^\s+|\s+$/g, '')
                             // hashSocket.send(JSON.stringify({ type: 'hash', data: hash}));
                             // var wstream = fs.createWriteStream(dir+"/master.m3u8", {'flags': 'a'});
                             

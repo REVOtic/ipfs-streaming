@@ -30,7 +30,7 @@ socket = io.connect("http://localhost:8081");
 // });
 
 socket.on('hash', function(data) {
-   console.log('Incoming message:', data);
+   console.log('Incoming message:', data.hash);
    hashes.push(data);
 });
 

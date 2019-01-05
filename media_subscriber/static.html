@@ -80,11 +80,11 @@
 		  		},
 		  		function (next) {
 		  			var hash = hashes.shift();
-		  			console.log(hash);
+		  			console.log(hash.hash);
 
-		  			hls.config.ipfsHash = hash;
+		  			hls.config.ipfsHash = hash.hash;
 					hls.attachMedia(video);
-					hls.loadSource('master.m3u8');
+					hls.loadSource(hash.master_name);
 					hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
 						video.play();
 					});
