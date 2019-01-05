@@ -5,14 +5,14 @@ const IPFS = require('ipfs')
 
 
 // Websocket for recieving video chunks
-const WebSocket = require('ws');
+// const WebSocket = require('ws');
 
 
 // Create a socket for chunks
-const wss = new WebSocket.Server({ port: 8000 });
+// const wss = new WebSocket.Server({ port: 8000 });
 
 // for sending hash
-const hashSocket = new WebSocket.Server({ port: 8082 });
+// const hashSocket = new WebSocket.Server({ port: 8082 });
 
 
 // Filesystem
@@ -26,10 +26,12 @@ var execSync = require('child_process').execSync;
 
 var app = require('express')();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
 server.listen(8081);
+var io = require('socket.io')(server);
+
 
 var __dirname = "./media_subscriber";
+
 app.get('/', function (req, res) {
   res.sendFile('/index.html', {root: __dirname});
 });
@@ -53,14 +55,14 @@ app.get('/player', function (req, res) {
 let dir, hash, pinCommand, number;
 
 
-let hs = hashSocket.on('connection', function connection(hSocket) {
-    console.log("hashSocket ready");
-    hSocket.send("Test");
+// let hs = hashSocket.on('connection', function connection(hSocket) {
+//     console.log("hashSocket ready");
+//     hSocket.send("Test");
 
-    hashSocket.on("hash", function(data){
-        hSocket.send(data);
-    });
-});
+//     hashSocket.on("hash", function(data){
+//         hSocket.send(data);
+//     });
+// });
 
 var hash_room;
 
