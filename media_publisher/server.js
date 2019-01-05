@@ -26,8 +26,9 @@ var execSync = require('child_process').execSync;
 
 var app = require('express')();
 var server = require('http').Server(app);
-server.listen(8081);
 var io = require('socket.io')(server);
+
+server.listen(8081);
 
 
 var __dirname = "./media_subscriber";

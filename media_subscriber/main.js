@@ -198,7 +198,7 @@ async function init(constraints) {
     // console.log(conn);
 
 
-    socket = io.connect("stream.endereum.io:8081");
+    socket = io.connect("https://stream.endereum.io:8081");
     // socket = io.connect("http://localhost:8081");
     // socket.emit('create', 'room1');
 
