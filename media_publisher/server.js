@@ -24,21 +24,21 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 
-var express = require('express');
-// var app = require('express')();
-// var server = require('http').Server(app);
-// var io = require('socket.io')(server);
+// var express = require('express');
+var app = require('express')();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
-// server.listen(8081);
+server.listen(8081);
 
-const app = express();
-const socketIO = require('socket.io');
+// const app = express();
+// const socketIO = require('socket.io');
 
-const server = express()
-  .use(app)
-  .listen(8081, () => console.log(`Listening Socket on ${ 8081 }`));
+// const server = express()
+//   .use(app)
+//   .listen(8081, () => console.log(`Listening Socket on ${ 8081 }`));
 
-const io = socketIO(server);
+// const io = socketIO(server);
 
 
 var __dirname = "./media_subscriber";
