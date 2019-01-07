@@ -5,7 +5,7 @@ var publishers = document.getElementById("publishers");
 socket = io.connect({transports: ['websocket']});
 // socket = io.connect("https://localhost:8081");
 
-this.refreshRooms(); 
+// this.refreshRooms(); 
 
 socket.on('hash', function(data) {
    console.log('Incoming message:', data.hash);
