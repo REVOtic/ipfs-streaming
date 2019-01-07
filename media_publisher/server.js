@@ -91,7 +91,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('room_for_hash', function(room) {
-    hash_room = room+"_hash";
+    hash_room = "_hash"+room;
     socket.join(hash_room);
   });
 
