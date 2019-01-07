@@ -1,6 +1,6 @@
 var publishers = document.getElementById("publishers");
 
-socket = io.connect("https://stream.endereum.io:8081");
+socket = io.connect("https://stream.endereum.io");
 // socket = io.connect("https://localhost:8081");
 
 
