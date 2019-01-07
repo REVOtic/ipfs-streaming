@@ -1,4 +1,4 @@
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 var publishers = document.getElementById("publishers");
 
 // socket = io.connect("https://stream.endereum.io", {transports: ['websocket']});
