@@ -174,6 +174,15 @@ io.sockets.on('connection', function(socket) {
             // End the writing stream
             proc.stdin.end();
 
+            // proc.stdout.on('data', function(data) {
+            //     console.log(data.toString());
+            // });
+
+            proc.stderr.on('data', function(data) {
+                // console.log(data.toString());
+            });
+
+
             // If FFmpeg stops for any reason, close the child_process.
             proc.on('close', (code, signal) => {
                 console.log('FFmpeg child process closed, code ' + code + ', signal ' + signal);

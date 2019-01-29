@@ -30,7 +30,7 @@ recordButton.addEventListener('click', () => {
   if (recordButton.textContent === 'Start Recording') {
     // call startRecording function
     startRecording();
-    interval = setInterval(record_and_send, 5000);
+    interval = setInterval(record_and_send, 10000);
 
   } else {
     stopRecording();
@@ -48,7 +48,7 @@ function record_and_send(stream) {
    // recorder.onstop = e => conn.send(new Blob(chunks));
    recorder.onstop = e => socket.emit('chunk', new Blob(chunks));
    console.log("Data sent") 
-   setTimeout(()=> recorder.stop(), 5000); // we'll have a 5s media file
+   setTimeout(()=> recorder.stop(), 10000); // we'll have a 5s media file
    recorder.start();
 }
 
@@ -192,8 +192,8 @@ async function init(constraints) {
 
 
     console.log("websocket connection")
-    socket = io.connect("https://stream.endereum.io", {transports: ['websocket']});
-    // socket = io.connect("http://localhost:8081");
+    // socket = io.connect("https://stream.endereum.io", {transports: ['websocket']});
+    socket = io.connect("http://localhost:8081");
     // socket.emit('create', 'room1');
 
     socket.on('connect', function() {

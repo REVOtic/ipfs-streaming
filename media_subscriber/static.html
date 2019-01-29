@@ -63,45 +63,117 @@
 	<script type="text/javascript">	
 		
 		var video = document.getElementById('video');		
-		var ipfs = window.IpfsApi('stream.endereum.io', '5001')
-		// var ipfs = window.IpfsApi('localhost', '5001')
+		// var ipfs = window.IpfsApi('stream.endereum.io', '5001')
+		var ipfs = window.IpfsApi('localhost', '5001')
 		var hashes = [];
 
 		var hls = new Hls();
 		Hls.DefaultConfig.debug = false;
 		Hls.DefaultConfig.loader = HlsjsIpfsLoader;
-
-
-		window.setInterval( function(){
-		  if(hashes.length != 0) {		     
-		  	if(Hls.isSupported()) {
-		  		var hls = new Hls();
-		  		hls.config.ipfs = ipfs;
-
-		  		async.whilst(function () {
-		  		  return hashes.length > 0;
-		  		},
-		  		function (next) {
+		var hls = new Hls();
+		hls.config.ipfs = ipfs;var hls = new Hls();
+	  	hls.config.ipfs = ipfs;
+		
+		if(Hls.isSupported()) {
+	  		async.whilst(function(){
+	  			// return hashes.length > 0;
+				console.log("Check");
+	  			return true;
+	  		}, function(next){
+				console.log("In the loop");
+	  			if(hashes.length !=0){
 		  			var hash = hashes.shift();
-		  			console.log(hash.hash);
-
 		  			hls.config.ipfsHash = hash.hash;
-					hls.attachMedia(video);
+		  			hls.attachMedia(video);
 					hls.loadSource(hash.master_name);
+					var level_duration = 0;
 					hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+						// this.level_duration = data;
 						video.play();
-					});
+						// console.log(data.levels[0].details.targetduration);
+						
+						// setTimeout(next(),data.levels[0].details.targetduration*1000);
+		  				setTimeout(function() {
+							next();
+						}, data.levels[0].details.targetduration*1000);
+					});	
+	  			}else{
+					console.log("Nothing to play");
+	  				
+	  				setTimeout(function() {
+						next();
+					}, 5000);
+	  			}
+	  				
 
-		  		    next();
-		  		},
-		  		function (err) {
-		  		  // All things are done!
-		  		});
-		  	}
+	  		}, function(err){
 
-		  }
-		},5)
+	  		});
+	  	}
+		
 
+		
+
+		// setInterval( function(){
+		//   if(hashes.length != 0) {
+		//   	if(Hls.isSupported()) {
+		//   		var hls = new Hls();
+		//   		hls.config.ipfs = ipfs;
+		  		
+		  	// 	async.whilst(function(){
+		  	// 		return hashes.length > 0;
+		  	// 	}, function(next){
+		  	// 		var hash = hashes.shift();
+		  	// 		hls.config.ipfsHash = hash.hash;
+		  	// 		hls.attachMedia(video);
+					// hls.loadSource(hash.master_name);
+					// var level_duration = 0;
+					// hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+					// 	// this.level_duration = data;
+					// 	video.play();
+					// 	// console.log(data.levels[0].details.targetduration);
+						
+					// 	// setTimeout(next(),data.levels[0].details.targetduration*1000);
+					// });	
+
+		  	// 	}, function(err){
+
+		  	// 	});
+
+	 //  			var hash = hashes.shift();
+	 //  			hls.config.ipfsHash = hash.hash;
+	 //  			hls.attachMedia(video);
+		// 		hls.loadSource(hash.master_name);
+		// 		var level_duration = 0;
+		// 		hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+		// 			// this.level_duration = data;
+		// 			video.play();
+		// 			// console.log(data.levels[0].details.targetduration);
+					
+		// 			// setTimeout(next(),data.levels[0].details.targetduration*1000);
+		// 		});
+
+		//   	}	
+
+		//   }
+
+		// },10000);
+
+				// 	hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+				// 		// this.level_duration = data;
+				// 		video.play();
+				// 		console.log(data.levels[0].details.targetduration);
+						
+				// 		// setTimeout(next(),data.levels[0].details.targetduration*1000);
+				// 	});
+		  // 		    // next();
+		  // 		},
+		  // 		function (err) {
+		  // 		  // All things are done!
+		  // 		});
+		  // 	}
+
+		  // }
 
 
 
