@@ -192,8 +192,8 @@ async function init(constraints) {
 
 
     console.log("websocket connection")
-    // socket = io.connect("https://stream.endereum.io", {transports: ['websocket']});
-    socket = io.connect("http://localhost:8081");
+    socket = io.connect("https://stream.endereum.io", {transports: ['websocket']});
+    // socket = io.connect("http://localhost:8081");
     // socket.emit('create', 'room1');
 
     socket.on('connect', function() {
